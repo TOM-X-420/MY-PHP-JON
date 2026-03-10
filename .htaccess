@@ -1,0 +1,24 @@
+Options -Indexes
+Options +FollowSymLinks
+
+RewriteEngine On
+
+# Force HTTPS (enable once SSL is set up in cPanel)
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Route all requests through index.php
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
+
+# Block access to sensitive files
+<FilesMatch "\.(env|log|sql|sh)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Block access to config directory
+<IfModule mod_rewrite.c>
+    RewriteRule ^config/ - [F,L]
+</IfModule>
